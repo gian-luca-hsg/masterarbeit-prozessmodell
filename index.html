@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Prozessmodell - Heptagonale Pyramide</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Times New Roman', serif;
+    background: radial-gradient(ellipse at center, #0d1525 0%, #050810 70%);
+    color: white;
+  }
+  #container { width: 100vw; height: 100vh; }
+  #title {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    color: #f5f5f5;
+    width: 90%;
+  }
+  #title h1 {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    letter-spacing: 0.5px;
+  }
+  #title p {
+    font-size: 13px;
+    font-style: italic;
+    margin: 0;
+    color: #a0a8b5;
+  }
+  #controls {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    background: rgba(15,20,35,0.85);
+    backdrop-filter: blur(10px);
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    color: #d0d5dd;
+    z-index: 10;
+    line-height: 1.7;
+  }
+  #controls h3 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+  }
+  #legend {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(15,20,35,0.9);
+    backdrop-filter: blur(10px);
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    color: #d0d5dd;
+    z-index: 10;
+    max-width: 340px;
+  }
+  #legend h3 {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+  }
+  .legend-section { margin-bottom: 14px; }
+  .legend-section:last-child { margin-bottom: 0; }
+  .legend-section h4 {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .legend-axis {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .legend-axis-text {
+    font-style: italic;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #b8c1ce;
+    padding-left: 32px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+    font-size: 11.5px;
+  }
+  .legend-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-weight: bold;
+    color: white;
+    font-family: 'Times New Roman', serif;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  #tooltip {
+    position: absolute;
+    background: rgba(20,28,45,0.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    max-width: 250px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  #tooltip strong { color: #fff; }
+  #tooltip .dim { font-size: 11px; opacity: 0.7; font-style: italic; }
+
+  #buttons {
+    position: absolute;
+    top: 100px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+  }
+  .action-btn {
+    background: rgba(15,20,35,0.85);
+    backdrop-filter: blur(10px);
+    color: #d0d5dd;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Times New Roman', serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+  }
+  .action-btn:hover {
+    background: rgba(30,40,60,0.95);
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+  }
+  .action-btn .icon {
+    font-size: 14px;
+  }
+
+  /* Mobile-Anpassungen */
+  @media (max-width: 768px) {
+    #title h1 { font-size: 16px; }
+    #title p { font-size: 11px; }
+    #legend {
+      bottom: 10px;
+      right: 10px;
+      max-width: calc(100vw - 20px);
+      padding: 10px 14px;
+      font-size: 10px;
+      max-height: 45vh;
+      overflow-y: auto;
+    }
+    #legend h3 { font-size: 12px; }
+    .legend-section h4 { font-size: 11px; }
+    .legend-item { font-size: 10px; }
+    .legend-num { width: 18px; height: 18px; font-size: 10px; }
+    #controls {
+      bottom: auto;
+      top: 80px;
+      left: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      max-width: 180px;
+    }
+    #controls h3 { font-size: 12px; }
+    #buttons {
+      top: 10px;
+      right: 10px;
+    }
+    .action-btn {
+      min-width: auto;
+      padding: 8px 10px;
+      font-size: 11px;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="title">
+  <h1>Prozessmodell zur Wahrnehmung asynchroner Interview-Tools</h1>
+  <p>aus Sicht der Bewerbenden, Rekrutierenden und Führungskräfte</p>
+</div>
+
+<div id="controls">
+  <h3>Interaktion</h3>
+  Linke Maustaste: Drehen<br>
+  Rechte Maustaste: Verschieben<br>
+  Mausrad: Zoomen<br>
+  Hover auf Kugel: Details
+</div>
+
+<div id="legend">
+  <h3>Aggregate Dimensions &amp; Themes</h3>
+
+  <div class="legend-section">
+    <h4 style="color: #FAB088;">↑ Erleben und Beurteilung des Formats</h4>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">3</span>Wahrnehmung der Interviewsituation</div>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">4</span>Selbstdarstellung und Vorbereitung der Bewerbenden</div>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">5</span>Beurteilung der Bewerbenden</div>
+  </div>
+
+  <div class="legend-section">
+    <h4 style="color: #7AB1F5;">↔ Strukturelle Bedingungen des Einsatzes</h4>
+    <div class="legend-item"><span class="legend-num" style="background: #4F8FE8;">1</span>Einsatz und Einordnung im Bewerbungsprozess</div>
+    <div class="legend-item"><span class="legend-num" style="background: #4F8FE8;">2</span>Auswirkungen auf Zeit</div>
+  </div>
+
+  <div class="legend-section">
+    <h4 style="color: #85DBB7;">↓ Haltung und Wirkung</h4>
+    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">6</span>Einstellung gegenüber Technik</div>
+    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">7</span>Eindruck vom Arbeitgeber</div>
+  </div>
+
+  <div class="legend-section legend-axis">
+    <h4 style="color: #FFE066;">◆ Zentrale Achse</h4>
+    <div class="legend-item legend-axis-text">Repräsentiert die Wahrnehmung der Beteiligten, auf die alle drei Aggregate Dimensions einwirken</div>
+  </div>
+</div>
+
+<div id="buttons">
+  <button class="action-btn" id="btn-reset" title="Setzt die Kameraposition zurück">
+    <span class="icon">⟲</span>Ansicht zurücksetzen
+  </button>
+  <button class="action-btn" id="btn-screenshot" title="Speichert das aktuelle Bild als hochauflösendes PNG">
+    <span class="icon">📷</span>Bild speichern
+  </button>
+</div>
+
+<div id="tooltip"></div>
+
+<div id="container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// =====================================================
+// SCENE SETUP
+// =====================================================
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050810);
+scene.fog = new THREE.Fog(0x050810, 50, 150);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    preserveDrawingBuffer: true  // Notwendig für Screenshot-Export
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+document.getElementById('container').appendChild(renderer.domElement);
+
+// =====================================================
+// LIGHTING
+// =====================================================
+scene.add(new THREE.AmbientLight(0x303048, 0.5));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+keyLight.position.set(20, 30, 15);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x6080ff, 0.35);
+fillLight.position.set(-15, 10, -10);
+scene.add(fillLight);
+
+// Akzentlichter pro Ebene (in Theme-Farben)
+// NEUE REIHENFOLGE: Haltung unten, Strukturelle Mitte, Erleben oben
+const ptLight1 = new THREE.PointLight(0x5DC9A1, 1.5, 22);  // Haltung unten (grün)
+ptLight1.position.set(0, 1, 0);
+scene.add(ptLight1);
+
+const ptLight2 = new THREE.PointLight(0x4F8FE8, 1.5, 22);  // Strukturelle Mitte (blau)
+ptLight2.position.set(0, 7, 0);
+scene.add(ptLight2);
+
+const ptLight3 = new THREE.PointLight(0xF08C5A, 1.5, 22);  // Erleben oben (orange)
+ptLight3.position.set(0, 13, 0);
+scene.add(ptLight3);
+
+// =====================================================
+// CAMERA CONTROLS
+// =====================================================
+let isMouseDown = false;
+let isMouseRight = false;
+let mouseX = 0, mouseY = 0;
+let lastMouseDownX = 0, lastMouseDownY = 0;
+let cameraDistance = 38;
+let cameraAngleH = Math.PI / 4;
+let cameraAngleV = Math.PI / 2.6;
+let cameraTarget = new THREE.Vector3(0, 7, 0);
+
+function updateCamera() {
+    camera.position.x = cameraTarget.x + cameraDistance * Math.sin(cameraAngleV) * Math.cos(cameraAngleH);
+    camera.position.y = cameraTarget.y + cameraDistance * Math.cos(cameraAngleV);
+    camera.position.z = cameraTarget.z + cameraDistance * Math.sin(cameraAngleV) * Math.sin(cameraAngleH);
+    camera.lookAt(cameraTarget);
+}
+updateCamera();
+
+renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
+renderer.domElement.addEventListener('mousedown', e => {
+    isMouseDown = e.button === 0;
+    isMouseRight = e.button === 2;
+    mouseX = e.clientX; mouseY = e.clientY;
+    lastMouseDownX = e.clientX;
+    lastMouseDownY = e.clientY;
+});
+renderer.domElement.addEventListener('mouseup', () => {
+    isMouseDown = false; isMouseRight = false;
+});
+renderer.domElement.addEventListener('mousemove', e => {
+    const dx = e.clientX - mouseX;
+    const dy = e.clientY - mouseY;
+    mouseX = e.clientX; mouseY = e.clientY;
+    if (isMouseDown) {
+        cameraAngleH -= dx * 0.005;
+        cameraAngleV = Math.max(0.1, Math.min(Math.PI - 0.1, cameraAngleV - dy * 0.005));
+        updateCamera();
+    } else if (isMouseRight) {
+        const right = new THREE.Vector3();
+        camera.getWorldDirection(right);
+        right.cross(new THREE.Vector3(0, 1, 0)).normalize();
+        cameraTarget.addScaledVector(right, -dx * 0.05);
+        cameraTarget.y += dy * 0.05;
+        updateCamera();
+    }
+
+    // Tooltip-Logik (Hover)
+    if (!isMouseDown && !isMouseRight) {
+        handleHover(e);
+    }
+});
+renderer.domElement.addEventListener('wheel', e => {
+    e.preventDefault();
+    cameraDistance = Math.max(15, Math.min(90, cameraDistance + e.deltaY * 0.04));
+    updateCamera();
+});
+
+// =====================================================
+// HELPERS
+// =====================================================
+function createTextSprite(text, options = {}) {
+    const { fontSize = 32, color = '#FFFFFF', weight = 'normal', padding = 20, scale = 1 } = options;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.font = `${weight} ${fontSize}px "Times New Roman", serif`;
+    const lines = text.split('\n');
+    const lineHeight = fontSize * 1.3;
+    let maxWidth = 0;
+    lines.forEach(line => { maxWidth = Math.max(maxWidth, ctx.measureText(line).width); });
+    canvas.width = maxWidth + padding * 2;
+    canvas.height = lineHeight * lines.length + padding;
+    ctx.font = `${weight} ${fontSize}px "Times New Roman", serif`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    lines.forEach((line, i) => {
+        ctx.fillText(line, canvas.width / 2, padding/2 + lineHeight * (i + 0.5));
+    });
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+    sprite.scale.set((canvas.width / canvas.height) * scale, scale, 1);
+    return sprite;
+}
+
+// Nummern-Sprite für Kugeln (zeigt 1-7)
+function createNumberSprite(number, color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+
+    // Kreis-Hintergrund
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(64, 64, 50, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Weisser Rand
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // Zahl
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 70px "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(number, 64, 68);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthTest: false  // Always visible, even through other objects
+    }));
+    sprite.scale.set(1.4, 1.4, 1);
+    sprite.renderOrder = 999;
+    return sprite;
+}
+
+// Theme-Knoten als leuchtende Kugel mit Nummer
+function createThemeNode(number, position, color, themeData) {
+    const group = new THREE.Group();
+
+    // Outer Glow
+    const glowGeo = new THREE.SphereGeometry(1.4, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+        color: color, transparent: true, opacity: 0.15
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    group.add(glow);
+
+    // Mid Glow
+    const glow2Geo = new THREE.SphereGeometry(1.0, 32, 32);
+    const glow2Mat = new THREE.MeshBasicMaterial({
+        color: color, transparent: true, opacity: 0.3
+    });
+    const glow2 = new THREE.Mesh(glow2Geo, glow2Mat);
+    group.add(glow2);
+
+    // Hauptkugel
+    const sphereGeo = new THREE.SphereGeometry(0.7, 32, 32);
+    const sphereMat = new THREE.MeshPhysicalMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.4,
+        metalness: 0.3,
+        roughness: 0.15,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1
+    });
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    sphere.castShadow = true;
+    sphere.userData = {
+        isTheme: true,
+        themeData: themeData,
+        originalEmissive: color
+    };
+    group.add(sphere);
+
+    // Nummer-Sprite
+    const numSprite = createNumberSprite(number, '#' + color.toString(16).padStart(6, '0'));
+    numSprite.position.set(0, 0.95, 0);
+    group.add(numSprite);
+
+    group.position.set(position.x, position.y, position.z);
+    group.userData = { sphere: sphere, glow: glow, glow2: glow2 };
+    return group;
+}
+
+// Glühende Verbindungslinie
+function createConnection(start, end, color, opacity = 0.5, thickness = 0.04) {
+    const group = new THREE.Group();
+    const direction = new THREE.Vector3().subVectors(end, start);
+    const length = direction.length();
+
+    const geometry = new THREE.CylinderGeometry(thickness, thickness, length, 8);
+    const material = new THREE.MeshBasicMaterial({
+        color: color, transparent: true, opacity: opacity
+    });
+    const line = new THREE.Mesh(geometry, material);
+
+    const middle = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+    line.position.copy(middle);
+    const up = new THREE.Vector3(0, 1, 0);
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction.clone().normalize());
+    line.quaternion.copy(quaternion);
+    group.add(line);
+
+    // Glow um die Linie
+    const glowGeo = new THREE.CylinderGeometry(thickness * 4, thickness * 4, length, 8);
+    const glowMat = new THREE.MeshBasicMaterial({
+        color: color, transparent: true, opacity: opacity * 0.25
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.position.copy(middle);
+    glow.quaternion.copy(quaternion);
+    group.add(glow);
+
+    return group;
+}
+
+// Ring (Kreis) als Ebenen-Markierung
+function createRing(radius, height, color, thickness = 0.12) {
+    const group = new THREE.Group();
+
+    // Hauptring
+    const ringGeo = new THREE.TorusGeometry(radius, thickness, 16, 64);
+    const ringMat = new THREE.MeshPhysicalMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.4,
+        metalness: 0.6,
+        roughness: 0.3
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = height;
+    group.add(ring);
+
+    // Glow um den Ring
+    const glowGeo = new THREE.TorusGeometry(radius, thickness * 3, 16, 64);
+    const glowMat = new THREE.MeshBasicMaterial({
+        color: color, transparent: true, opacity: 0.2
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.rotation.x = Math.PI / 2;
+    glow.position.y = height;
+    group.add(glow);
+
+    return group;
+}
+
+// =====================================================
+// BUILD STRUCTURE
+// =====================================================
+
+const COLOR_DIM1 = 0x4F8FE8;
+const COLOR_DIM2 = 0xF08C5A;
+const COLOR_DIM3 = 0x5DC9A1;
+
+// === ZENTRALER STAB ===
+const stabHeight = 16;
+const stabGeo = new THREE.CylinderGeometry(0.18, 0.18, stabHeight, 16);
+const stabMat = new THREE.MeshPhysicalMaterial({
+    color: 0xFFE066,
+    metalness: 0.9,
+    roughness: 0.15,
+    emissive: 0xFFB000,
+    emissiveIntensity: 0.4,
+    clearcoat: 1.0
+});
+const stab = new THREE.Mesh(stabGeo, stabMat);
+stab.position.y = 7;
+stab.castShadow = true;
+scene.add(stab);
+
+// Glow um den Stab
+const stabGlowGeo = new THREE.CylinderGeometry(0.5, 0.5, stabHeight, 16);
+const stabGlowMat = new THREE.MeshBasicMaterial({
+    color: 0xFFE066, transparent: true, opacity: 0.18
+});
+const stabGlow = new THREE.Mesh(stabGlowGeo, stabGlowMat);
+stabGlow.position.y = 7;
+scene.add(stabGlow);
+
+// === Zentrales Element entfernt ===
+// Der goldene Stab in der Mitte fungiert als Achse der Wahrnehmung,
+// auf die alle drei Aggregate Dimensions einwirken (siehe Legende).
+
+// === KRÖNUNG OBEN ===
+const tipBallGeo = new THREE.SphereGeometry(0.5, 32, 32);
+const tipBallMat = new THREE.MeshPhysicalMaterial({
+    color: 0xFFD700,
+    metalness: 0.9,
+    roughness: 0.1,
+    clearcoat: 1.0,
+    emissive: 0xFFB000,
+    emissiveIntensity: 0.6
+});
+const tipBall = new THREE.Mesh(tipBallGeo, tipBallMat);
+tipBall.position.y = 15.5;
+tipBall.castShadow = true;
+scene.add(tipBall);
+
+// === BASIS UNTEN ===
+const baseBallGeo = new THREE.SphereGeometry(0.5, 32, 32);
+const baseBallMat = new THREE.MeshPhysicalMaterial({
+    color: 0xFFD700,
+    metalness: 0.9,
+    roughness: 0.1,
+    clearcoat: 1.0,
+    emissive: 0xFFB000,
+    emissiveIntensity: 0.6
+});
+const baseBall = new THREE.Mesh(baseBallGeo, baseBallMat);
+baseBall.position.y = -1.5;
+baseBall.castShadow = true;
+scene.add(baseBall);
+
+// === DREI RINGE ALS EBENEN ===
+// NEUE REIHENFOLGE:
+// - Haltung und Wirkung UNTEN (grün, kleinster Radius)
+// - Strukturelle Bedingungen MITTE (blau, mittlerer Radius)
+// - Erleben und Beurteilung OBEN (orange, grösster Radius - 3 Themes)
+const baseY = 1;   // Haltung unten
+const midY = 7;    // Strukturelle Mitte
+const topY = 13;   // Erleben oben
+
+const baseRadius = 9;   // Haltung (2 Themes)
+const midRadius = 11;   // Strukturelle (2 Themes)
+const topRadius = 13;   // Erleben (3 Themes - mehr Platz nötig)
+
+scene.add(createRing(baseRadius, baseY, COLOR_DIM3));  // grün unten
+scene.add(createRing(midRadius, midY, COLOR_DIM1));    // blau mitte
+scene.add(createRing(topRadius, topY, COLOR_DIM2));    // orange oben
+
+// === SIEBEN THEME-KUGELN ===
+// NEUE REIHENFOLGE:
+// UNTEN (Haltung und Wirkung): 6, 7
+// MITTE (Strukturelle Bedingungen): 1, 2
+// OBEN (Erleben und Beurteilung): 3, 4, 5
+
+const allThemes = [];
+
+// UNTEN - Dim 3: 2 Themes (Haltung und Wirkung)
+const dim3Themes = [
+    { number: 6, label: 'Einstellung gegenüber Technik', dim: 'Haltung und Wirkung', color: COLOR_DIM3, angle: 0 },
+    { number: 7, label: 'Eindruck vom Arbeitgeber', dim: 'Haltung und Wirkung', color: COLOR_DIM3, angle: Math.PI }
+];
+
+// MITTE - Dim 1: 2 Themes (Strukturelle Bedingungen)
+const dim1Themes = [
+    { number: 1, label: 'Einsatz und Einordnung im Bewerbungsprozess', dim: 'Strukturelle Bedingungen', color: COLOR_DIM1, angle: Math.PI / 2 },
+    { number: 2, label: 'Auswirkungen auf Zeit', dim: 'Strukturelle Bedingungen', color: COLOR_DIM1, angle: -Math.PI / 2 }
+];
+
+// OBEN - Dim 2: 3 Themes (Erleben und Beurteilung, gleichmässig verteilt)
+const dim2Themes = [
+    { number: 3, label: 'Wahrnehmung der Interviewsituation', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 },
+    { number: 4, label: 'Selbstdarstellung und Vorbereitung der Bewerbenden', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 + 2 * Math.PI / 3 },
+    { number: 5, label: 'Beurteilung der Bewerbenden', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 - 2 * Math.PI / 3 }
+];
+
+// UNTEN platzieren (Haltung und Wirkung)
+dim3Themes.forEach(t => {
+    const x = Math.cos(t.angle) * baseRadius;
+    const z = Math.sin(t.angle) * baseRadius;
+    const node = createThemeNode(t.number, { x, y: baseY, z }, t.color, t);
+    scene.add(node);
+    allThemes.push({ ...t, node, position: new THREE.Vector3(x, baseY, z) });
+});
+
+// MITTE platzieren (Strukturelle Bedingungen)
+dim1Themes.forEach(t => {
+    const x = Math.cos(t.angle) * midRadius;
+    const z = Math.sin(t.angle) * midRadius;
+    const node = createThemeNode(t.number, { x, y: midY, z }, t.color, t);
+    scene.add(node);
+    allThemes.push({ ...t, node, position: new THREE.Vector3(x, midY, z) });
+});
+
+// OBEN platzieren (Erleben und Beurteilung)
+dim2Themes.forEach(t => {
+    const x = Math.cos(t.angle) * topRadius;
+    const z = Math.sin(t.angle) * topRadius;
+    const node = createThemeNode(t.number, { x, y: topY, z }, t.color, t);
+    scene.add(node);
+    allThemes.push({ ...t, node, position: new THREE.Vector3(x, topY, z) });
+});
+
+// =====================================================
+// VERBINDUNGEN
+// =====================================================
+
+function findTheme(num) {
+    return allThemes.find(t => t.number === num);
+}
+
+// === Innerhalb der Dimensionen (kräftig) ===
+// Dim 1: 1 ↔ 2
+scene.add(createConnection(findTheme(1).position, findTheme(2).position, COLOR_DIM1, 0.55, 0.05));
+
+// Dim 2: 3 ↔ 4 ↔ 5 (Dreieck)
+scene.add(createConnection(findTheme(3).position, findTheme(4).position, COLOR_DIM2, 0.55, 0.05));
+scene.add(createConnection(findTheme(4).position, findTheme(5).position, COLOR_DIM2, 0.55, 0.05));
+scene.add(createConnection(findTheme(3).position, findTheme(5).position, COLOR_DIM2, 0.55, 0.05));
+
+// Dim 3: 6 ↔ 7
+scene.add(createConnection(findTheme(6).position, findTheme(7).position, COLOR_DIM3, 0.55, 0.05));
+
+// === Zwischen Dimensionen (selektiv, nur sinnvolle Verbindungen) ===
+const crossConnections = [
+    // Einsatz und Einordnung (1) → Wahrnehmung der Interviewsituation (3)
+    [1, 3],
+    // Auswirkungen auf Zeit (2) → Selbstdarstellung und Vorbereitung (4)
+    [2, 4],
+    // Wahrnehmung der Interviewsituation (3) → Einstellung gegenüber Technik (6)
+    [3, 6],
+    // Selbstdarstellung und Vorbereitung (4) → Eindruck vom Arbeitgeber (7)
+    [4, 7],
+    // Beurteilung der Bewerbenden (5) → Einstellung gegenüber Technik (6)
+    [5, 6],
+    // Beurteilung der Bewerbenden (5) → Eindruck vom Arbeitgeber (7)
+    [5, 7]
+];
+
+crossConnections.forEach(([a, b]) => {
+    scene.add(createConnection(
+        findTheme(a).position,
+        findTheme(b).position,
+        0xCCDDFF, 0.3, 0.03
+    ));
+});
+
+// =====================================================
+// (Dimension-Labels entfernt - Farben und Legende reichen zur Orientierung)
+// =====================================================
+
+// =====================================================
+// GROUND
+// =====================================================
+const groundGeo = new THREE.PlaneGeometry(80, 80);
+const groundMat = new THREE.MeshStandardMaterial({
+    color: 0x121826,
+    metalness: 0.6,
+    roughness: 0.5
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -2.5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const grid = new THREE.GridHelper(80, 40, 0x1f2940, 0x101830);
+grid.position.y = -2.5;
+scene.add(grid);
+
+// =====================================================
+// PARTIKEL ATMOSPHÄRE
+// =====================================================
+const particleCount = 250;
+const particleGeometry = new THREE.BufferGeometry();
+const positions = [];
+for (let i = 0; i < particleCount; i++) {
+    const r = 8 + Math.random() * 25;
+    const angle = Math.random() * Math.PI * 2;
+    positions.push(
+        Math.cos(angle) * r,
+        Math.random() * 22 - 2,
+        Math.sin(angle) * r
+    );
+}
+particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+const particleMaterial = new THREE.PointsMaterial({
+    color: 0xaaccff,
+    size: 0.07,
+    transparent: true,
+    opacity: 0.5
+});
+const particles = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particles);
+
+// =====================================================
+// HOVER & TOOLTIP
+// =====================================================
+const raycaster = new THREE.Raycaster();
+const mouseVec = new THREE.Vector2();
+let hoveredTheme = null;
+const tooltipEl = document.getElementById('tooltip');
+
+function handleHover(event) {
+    mouseVec.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseVec.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouseVec, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    let foundTheme = null;
+    for (const intersect of intersects) {
+        if (intersect.object.userData.isTheme) {
+            foundTheme = intersect.object;
+            break;
+        }
+    }
+
+    // Reset highlighting
+    if (hoveredTheme && hoveredTheme !== foundTheme) {
+        hoveredTheme.scale.set(1, 1, 1);
+    }
+
+    if (foundTheme) {
+        foundTheme.scale.set(1.3, 1.3, 1.3);
+        hoveredTheme = foundTheme;
+        const data = foundTheme.userData.themeData;
+        tooltipEl.innerHTML = `<strong>${data.number}. ${data.label}</strong><br><span class="dim">${data.dim}</span>`;
+        tooltipEl.style.display = 'block';
+        tooltipEl.style.left = (event.clientX + 15) + 'px';
+        tooltipEl.style.top = (event.clientY + 15) + 'px';
+        renderer.domElement.style.cursor = 'pointer';
+    } else {
+        if (hoveredTheme) {
+            hoveredTheme.scale.set(1, 1, 1);
+            hoveredTheme = null;
+        }
+        tooltipEl.style.display = 'none';
+        renderer.domElement.style.cursor = 'grab';
+    }
+}
+
+// =====================================================
+// ANIMATION LOOP
+// =====================================================
+let autoRotate = true;
+setTimeout(() => { autoRotate = false; }, 8000);
+
+let frame = 0;
+function animate() {
+    requestAnimationFrame(animate);
+    frame++;
+
+    if (autoRotate) {
+        cameraAngleH += 0.003;
+        updateCamera();
+    }
+
+    // Stab glow pulsiert leicht
+    const stabPulse = 1 + Math.sin(frame * 0.03) * 0.08;
+    stabGlow.scale.set(stabPulse, 1, stabPulse);
+
+    // Tip & Base rotation
+    tipBall.rotation.y = frame * 0.02;
+    baseBall.rotation.y = -frame * 0.02;
+
+    // Partikel-Drift
+    const ps = particles.geometry.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+        ps[i * 3 + 1] += 0.008;
+        if (ps[i * 3 + 1] > 22) ps[i * 3 + 1] = -2;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+
+    renderer.render(scene, camera);
+}
+animate();
+
+renderer.domElement.style.cursor = 'grab';
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// =====================================================
+// BUTTONS: Reset View & Screenshot
+// =====================================================
+
+// Initial camera state speichern
+const initialState = {
+    distance: 38,
+    angleH: Math.PI / 4,
+    angleV: Math.PI / 2.6,
+    target: { x: 0, y: 7, z: 0 }
+};
+
+// Reset View Button
+document.getElementById('btn-reset').addEventListener('click', () => {
+    cameraDistance = initialState.distance;
+    cameraAngleH = initialState.angleH;
+    cameraAngleV = initialState.angleV;
+    cameraTarget.set(initialState.target.x, initialState.target.y, initialState.target.z);
+    autoRotate = false;
+    updateCamera();
+});
+
+// Screenshot Button - hochauflösender Export als PNG
+document.getElementById('btn-screenshot').addEventListener('click', () => {
+    autoRotate = false;
+
+    // Hochauflösende Render-Auflösung berechnen (3x für print-Qualität)
+    const exportWidth = 3840;  // 4K-Breite
+    const exportHeight = 2160; // 4K-Höhe
+
+    // Aktuelle Renderer-Settings sichern
+    const oldSize = new THREE.Vector2();
+    renderer.getSize(oldSize);
+    const oldPixelRatio = renderer.getPixelRatio();
+
+    // Auf Export-Auflösung setzen
+    renderer.setPixelRatio(1);
+    renderer.setSize(exportWidth, exportHeight, false);
+    camera.aspect = exportWidth / exportHeight;
+    camera.updateProjectionMatrix();
+
+    // Frame rendern
+    renderer.render(scene, camera);
+
+    // Bild als PNG speichern
+    renderer.domElement.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+        link.download = `Prozessmodell_AVI_${timestamp}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // Renderer zurücksetzen
+        renderer.setPixelRatio(oldPixelRatio);
+        renderer.setSize(oldSize.x, oldSize.y, false);
+        camera.aspect = oldSize.x / oldSize.y;
+        camera.updateProjectionMatrix();
+    }, 'image/png');
+});
+</script>
+</body>
+</html>
