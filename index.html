@@ -239,21 +239,21 @@
 
   <div class="legend-section">
     <h4 style="color: #FAB088;">↑ Erleben und Beurteilung des Formats</h4>
-    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">3</span>Wahrnehmung der Interviewsituation</div>
-    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">4</span>Selbstdarstellung und Vorbereitung der Bewerbenden</div>
-    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">5</span>Beurteilung der Bewerbenden</div>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">3</span>Kontrollverschiebung durch reduzierte Interaktion</div>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">4</span>Selbstdarstellung und strategische Vorbereitung der Bewerbenden</div>
+    <div class="legend-item"><span class="legend-num" style="background: #F08C5A;">5</span>Intransparenz und Unsicherheit bei der Bewertung</div>
   </div>
 
   <div class="legend-section">
-    <h4 style="color: #7AB1F5;">↔ Strukturelle Bedingungen des Einsatzes</h4>
+    <h4 style="color: #7AB1F5;">↔ Strukturelle und zeitliche Rahmenbedingungen des Einsatzes</h4>
     <div class="legend-item"><span class="legend-num" style="background: #4F8FE8;">1</span>Einsatz und Einordnung im Bewerbungsprozess</div>
-    <div class="legend-item"><span class="legend-num" style="background: #4F8FE8;">2</span>Auswirkungen auf Zeit</div>
+    <div class="legend-item"><span class="legend-num" style="background: #4F8FE8;">2</span>Zeitgewinn für Rekrutierende, Mehraufwand für Bewerbende</div>
   </div>
 
   <div class="legend-section">
-    <h4 style="color: #85DBB7;">↓ Haltung und Wirkung</h4>
-    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">6</span>Einstellung gegenüber Technik</div>
-    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">7</span>Eindruck vom Arbeitgeber</div>
+    <h4 style="color: #85DBB7;">↓ Technologische Einstellung & Wirkung auf das Arbeitgeberimage</h4>
+    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">6</span>Grundlegende Haltung gegenüber der eingesetzten Technologie</div>
+    <div class="legend-item"><span class="legend-num" style="background: #5DC9A1;">7</span>Aussenwahrnehmung des Unternehmens durch den Einsatz</div>
   </div>
 
   <div class="legend-section legend-axis">
@@ -755,50 +755,50 @@ baseBall.castShadow = true;
 scene.add(baseBall);
 
 // === DREI RINGE ALS EBENEN ===
-// NEUE REIHENFOLGE:
-// - Haltung und Wirkung UNTEN (grün, kleinster Radius)
-// - Strukturelle Bedingungen MITTE (blau, mittlerer Radius)
-// - Erleben und Beurteilung OBEN (orange, grösster Radius - 3 Themes)
-const baseY = 1;   // Haltung unten
-const midY = 7;    // Strukturelle Mitte
-const topY = 13;   // Erleben oben
+// REIHENFOLGE:
+// - Technologische Einstellung & Wirkung auf Arbeitgeberimage UNTEN (grün, kleinster Radius)
+// - Strukturelle und zeitliche Rahmenbedingungen MITTE (blau, mittlerer Radius)
+// - Erleben und Beurteilung des Formats OBEN (orange, grösster Radius - 3 Themes)
+const baseY = 1;   // Dim 3 unten
+const midY = 7;    // Dim 1 mitte
+const topY = 13;   // Dim 2 oben
 
-const baseRadius = 9;   // Haltung (2 Themes)
-const midRadius = 11;   // Strukturelle (2 Themes)
-const topRadius = 13;   // Erleben (3 Themes - mehr Platz nötig)
+const baseRadius = 9;   // Dim 3 (2 Themes)
+const midRadius = 11;   // Dim 1 (2 Themes)
+const topRadius = 13;   // Dim 2 (3 Themes - mehr Platz nötig)
 
 scene.add(createRing(baseRadius, baseY, COLOR_DIM3));  // grün unten
 scene.add(createRing(midRadius, midY, COLOR_DIM1));    // blau mitte
 scene.add(createRing(topRadius, topY, COLOR_DIM2));    // orange oben
 
 // === SIEBEN THEME-KUGELN ===
-// NEUE REIHENFOLGE:
-// UNTEN (Haltung und Wirkung): 6, 7
-// MITTE (Strukturelle Bedingungen): 1, 2
-// OBEN (Erleben und Beurteilung): 3, 4, 5
+// REIHENFOLGE:
+// UNTEN (Dim 3 - Technologische Einstellung & Wirkung auf Arbeitgeberimage): 6, 7
+// MITTE (Dim 1 - Strukturelle und zeitliche Rahmenbedingungen): 1, 2
+// OBEN (Dim 2 - Erleben und Beurteilung des Formats): 3, 4, 5
 
 const allThemes = [];
 
-// UNTEN - Dim 3: 2 Themes (Haltung und Wirkung)
+// UNTEN - Dim 3: 2 Themes (Technologische Einstellung & Wirkung auf das Arbeitgeberimage)
 const dim3Themes = [
-    { number: 6, label: 'Einstellung gegenüber Technik', dim: 'Haltung und Wirkung', color: COLOR_DIM3, angle: 0 },
-    { number: 7, label: 'Eindruck vom Arbeitgeber', dim: 'Haltung und Wirkung', color: COLOR_DIM3, angle: Math.PI }
+    { number: 6, label: 'Grundlegende Haltung gegenüber der eingesetzten Technologie', dim: 'Technologische Einstellung & Wirkung auf das Arbeitgeberimage', color: COLOR_DIM3, angle: 0 },
+    { number: 7, label: 'Aussenwahrnehmung des Unternehmens durch den Einsatz', dim: 'Technologische Einstellung & Wirkung auf das Arbeitgeberimage', color: COLOR_DIM3, angle: Math.PI }
 ];
 
-// MITTE - Dim 1: 2 Themes (Strukturelle Bedingungen)
+// MITTE - Dim 1: 2 Themes (Strukturelle und zeitliche Rahmenbedingungen des Einsatzes)
 const dim1Themes = [
-    { number: 1, label: 'Einsatz und Einordnung im Bewerbungsprozess', dim: 'Strukturelle Bedingungen', color: COLOR_DIM1, angle: Math.PI / 2 },
-    { number: 2, label: 'Auswirkungen auf Zeit', dim: 'Strukturelle Bedingungen', color: COLOR_DIM1, angle: -Math.PI / 2 }
+    { number: 1, label: 'Einsatz und Einordnung im Bewerbungsprozess', dim: 'Strukturelle und zeitliche Rahmenbedingungen des Einsatzes', color: COLOR_DIM1, angle: Math.PI / 2 },
+    { number: 2, label: 'Zeitgewinn für Rekrutierende, Mehraufwand für Bewerbende', dim: 'Strukturelle und zeitliche Rahmenbedingungen des Einsatzes', color: COLOR_DIM1, angle: -Math.PI / 2 }
 ];
 
 // OBEN - Dim 2: 3 Themes (Erleben und Beurteilung, gleichmässig verteilt)
 const dim2Themes = [
-    { number: 3, label: 'Wahrnehmung der Interviewsituation', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 },
-    { number: 4, label: 'Selbstdarstellung und Vorbereitung der Bewerbenden', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 + 2 * Math.PI / 3 },
-    { number: 5, label: 'Beurteilung der Bewerbenden', dim: 'Erleben und Beurteilung', color: COLOR_DIM2, angle: Math.PI / 2 - 2 * Math.PI / 3 }
+    { number: 3, label: 'Kontrollverschiebung durch reduzierte Interaktion', dim: 'Erleben und Beurteilung des Formats', color: COLOR_DIM2, angle: Math.PI / 2 },
+    { number: 4, label: 'Selbstdarstellung und strategische Vorbereitung der Bewerbenden', dim: 'Erleben und Beurteilung des Formats', color: COLOR_DIM2, angle: Math.PI / 2 + 2 * Math.PI / 3 },
+    { number: 5, label: 'Intransparenz und Unsicherheit bei der Bewertung', dim: 'Erleben und Beurteilung des Formats', color: COLOR_DIM2, angle: Math.PI / 2 - 2 * Math.PI / 3 }
 ];
 
-// UNTEN platzieren (Haltung und Wirkung)
+// UNTEN platzieren (Dim 3 - Technologische Einstellung & Wirkung auf Arbeitgeberimage)
 dim3Themes.forEach(t => {
     const x = Math.cos(t.angle) * baseRadius;
     const z = Math.sin(t.angle) * baseRadius;
@@ -807,7 +807,7 @@ dim3Themes.forEach(t => {
     allThemes.push({ ...t, node, position: new THREE.Vector3(x, baseY, z) });
 });
 
-// MITTE platzieren (Strukturelle Bedingungen)
+// MITTE platzieren (Dim 1 - Strukturelle und zeitliche Rahmenbedingungen)
 dim1Themes.forEach(t => {
     const x = Math.cos(t.angle) * midRadius;
     const z = Math.sin(t.angle) * midRadius;
@@ -816,7 +816,7 @@ dim1Themes.forEach(t => {
     allThemes.push({ ...t, node, position: new THREE.Vector3(x, midY, z) });
 });
 
-// OBEN platzieren (Erleben und Beurteilung)
+// OBEN platzieren (Dim 2 - Erleben und Beurteilung des Formats)
 dim2Themes.forEach(t => {
     const x = Math.cos(t.angle) * topRadius;
     const z = Math.sin(t.angle) * topRadius;
@@ -847,17 +847,17 @@ scene.add(createConnection(findTheme(6).position, findTheme(7).position, COLOR_D
 
 // === Zwischen Dimensionen (selektiv, nur sinnvolle Verbindungen) ===
 const crossConnections = [
-    // Einsatz und Einordnung (1) → Wahrnehmung der Interviewsituation (3)
+    // Einsatz und Einordnung (1) → Kontrollverschiebung (3)
     [1, 3],
-    // Auswirkungen auf Zeit (2) → Selbstdarstellung und Vorbereitung (4)
+    // Zeitgewinn / Mehraufwand (2) → Selbstdarstellung und strategische Vorbereitung (4)
     [2, 4],
-    // Wahrnehmung der Interviewsituation (3) → Einstellung gegenüber Technik (6)
+    // Kontrollverschiebung (3) → Grundlegende Haltung gegenüber Technologie (6)
     [3, 6],
-    // Selbstdarstellung und Vorbereitung (4) → Eindruck vom Arbeitgeber (7)
+    // Selbstdarstellung und strategische Vorbereitung (4) → Aussenwahrnehmung des Unternehmens (7)
     [4, 7],
-    // Beurteilung der Bewerbenden (5) → Einstellung gegenüber Technik (6)
+    // Intransparenz und Unsicherheit (5) → Grundlegende Haltung gegenüber Technologie (6)
     [5, 6],
-    // Beurteilung der Bewerbenden (5) → Eindruck vom Arbeitgeber (7)
+    // Intransparenz und Unsicherheit (5) → Aussenwahrnehmung des Unternehmens (7)
     [5, 7]
 ];
 
