@@ -6,9 +6,9 @@ Dieses Repository enthält die **interaktive 3D-Visualisierung** des Prozessmode
 
 Das Modell stellt die Ergebnisse einer qualitativen Analyse von 17 Experteninterviews mit Bewerbenden, Rekrutierenden und Führungskräften dar. Es visualisiert die drei identifizierten Aggregate Dimensions sowie die sieben Second-Order Themes in einer dreistufigen Struktur:
 
-- **Erleben und Beurteilung des Formats** (drei Themes)
-- **Strukturelle und zeitliche Rahmenbedingungen des Einsatzes** (zwei Themes)
-- **Technologische Einstellung & Wirkung auf das Arbeitgeberimage** (zwei Themes)
+- **Erleben und Beurteilung** (drei Themes)
+- **Strukturelle Rahmenbedingungen** (zwei Themes)
+- **Haltung und Wirkung** (zwei Themes)
 
 Die methodische Grundlage bildet die qualitative Inhaltsanalyse nach Gläser und Laudel (2010) in Kombination mit der Gioia-Methodik (Gioia et al., 2013).
 
