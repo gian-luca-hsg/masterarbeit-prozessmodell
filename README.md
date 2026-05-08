@@ -35,7 +35,7 @@ Die Visualisierung wurde mit **Three.js (r128)** umgesetzt und benötigt einen m
 
 ## Forschungsfrage
 
-> *Welche Faktoren beeinflussen die Wahrnehmung von Kosten, Nutzen und Vertrauen asynchroner Interview-Tools im Bewerbungsprozess aus Sicht von Rekrutierenden und Bewerbenden?*
+> *Welche Faktoren beeinflussen die Wahrnehmung von Kosten, Nutzen und Vertrauen asynchroner Interview-Tools im Bewerbungsprozess aus Sicht von Bewerbenden, Rekrutierenden und Führungskräften?*
 
 ## Lizenz
 
@@ -43,4 +43,4 @@ Diese Visualisierung ist Teil einer akademischen Arbeit. Die Verwendung in ander
 
 ---
 
-*Forschungsarbeit am Institut für Personalmanagement und Organisation (FAA) der Universität St. Gallen*
+*Forschungsarbeit am Institut für Arbeit, Arbeitsorganisation und Transformation (FAA) der Universität St. Gallen*
